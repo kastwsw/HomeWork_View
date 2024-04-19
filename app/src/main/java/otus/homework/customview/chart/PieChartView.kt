@@ -1,5 +1,6 @@
 package otus.homework.customview.chart
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
@@ -12,6 +13,7 @@ import android.view.GestureDetector
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.MotionEvent
 import android.view.View
+import android.view.animation.BounceInterpolator
 import androidx.core.graphics.times
 import otus.homework.customview.utils.dp
 import kotlin.math.atan2
@@ -89,11 +91,28 @@ class PieChartView @JvmOverloads constructor(
                 // отработать изменения
                 saySelected()
                 invalidate()
+                // анимировать выбор сектора
+                animator.cancel()
+                animator.start()
             }
             true
         } ?: false
 
     })
+
+    // начинать с 12 часов
+    private var startAngle = 270f
+
+    // анимация в виде небольшого поворота
+    private var animator = ValueAnimator.ofFloat(280f, 270f).apply {
+        duration = 1200L
+        interpolator = BounceInterpolator()
+        addUpdateListener {
+            val value = it.animatedValue as Float
+            startAngle = value
+            invalidate()
+        }
+    }
 
 
     private fun getDataByAngle(angle: Double): ChartData? = data?.let { list ->
@@ -173,8 +192,6 @@ class PieChartView @JvmOverloads constructor(
 
     override fun onDraw(canvas: Canvas) {
         data?.also { list ->
-            // начинать с 12 часов
-            var startAngle = 270f
             var sweepAngle: Float
             var endAngle: Float
 

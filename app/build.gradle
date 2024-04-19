@@ -11,8 +11,8 @@ android {
         applicationId "otus.homework.customview"
         minSdkVersion 23
         targetSdkVersion 33
-        versionCode 1
-        versionName "1.0"
+        versionCode 1002002
+        versionName "version 1.2.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

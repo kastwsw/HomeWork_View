@@ -6,6 +6,7 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.util.AttributeSet
 import android.view.View
+import android.view.ViewPropertyAnimator
 import otus.homework.customview.utils.dp
 import otus.homework.customview.utils.sp
 
@@ -32,6 +33,9 @@ class LineChartView @JvmOverloads constructor(
         textSize = 18.sp
     }
 
+    // анимации
+    private var animator: ViewPropertyAnimator = animate().setDuration(1200L)
+
     // данные для чарта
     private var data: List<ChartData>? = null
 
@@ -51,9 +55,15 @@ class LineChartView @JvmOverloads constructor(
      */
     fun populate(list: List<ChartData>, color: Int? = null) {
         data = list
+
+        // анимировать изменение данных
+        alpha = 0f
+        animator.cancel()
+        animator.alpha(1f).start()
+
         // рассчитать параметры графика
-        minX = list.first().time
-        maxX = list.last().time
+        minX = list.firstOrNull()?.time ?: 0L
+        maxX = list.lastOrNull()?.time ?: 0L
         intervalX = maxX - minX
 
         minY = list.minBy { it.amount }.amount
